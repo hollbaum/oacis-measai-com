@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Agent {{ name }} - VM100 Dashboard</title>
+    <link rel="stylesheet" href="/static/css/style.css" />
+  </head>
+  <body>
+    <div class="dashboard-container">
+      <header class="dashboard-header">
+        <a href="/" class="back-link">← Back to Dashboard</a>
+        <h1 class="agent-detail-title">🤖 {{ name }}</h1>
+        <p class="agent-detail-subtitle">Agent Details & Activity</p>
+      </header>
+
+      {% if error %}
+        <div class="error-container">
+          <p class="error-message">{{ error }}</p>
+        </div>
+      {% else %}
+        <div class="agent-detail-container">
+          <div class="tabs-container">
+            <div class="tabs-header">
+              <button class="tab-btn active" data-tab="tmux">
+                <span class="tab-icon">📺</span>
+                <span>Tmux Output</span>
+              </button>
+              <button class="tab-btn" data-tab="files">
+                <span class="tab-icon">📁</span>
+                <span>Files</span>
+              </button>
+              <button class="tab-btn" data-tab="logs">
+                <span class="tab-icon">📊</span>
+                <span>Activity Log</span>
+              </button>
+            </div>
+
+            <div class="tabs-content">
+              <!-- Tmux Tab -->
+              <div class="tab-panel active" data-tab="tmux">
+                <div class="tmux-controls">
+                  <button id="refresh-tmux" class="btn-small">⟲ Refresh</button>
+                  <button id="fullscreen-tmux" class="btn-small">⛶ Fullscreen</button>
+                  <span class="auto-refresh-status">
+                    <input type="checkbox" id="auto-refresh" checked />
+                    <label for="auto-refresh">Auto-refresh (10s)</label>
+                  </span>
+                </div>
+                <div class="loading-spinner" id="tmux-loading">⟳ Loading...</div>
+                <pre class="tmux-output" id="tmux-output"></pre>
+              </div>
+
+              <!-- Files Tab -->
+              <div class="tab-panel" data-tab="files">
+                <div class="files-controls">
+                  <button id="refresh-files" class="btn-small">⟲ Refresh</button>
+                </div>
+                <div class="loading-spinner" id="files-loading">⟳ Loading...</div>
+                <div class="files-list" id="files-list"></div>
+              </div>
+
+              <!-- Logs Tab -->
+              <div class="tab-panel" data-tab="logs">
+                <div class="logs-controls">
+                  <button id="refresh-logs" class="btn-small">⟲ Refresh</button>
+                </div>
+                <div class="loading-spinner" id="logs-loading">⟳ Loading...</div>
+                <div class="logs-output" id="logs-output"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      {% endif %}
+
+      <footer class="dashboard-footer">
+        <p>Agent: <strong>{{ name }}</strong> | <span id="last-update">Last updated: just now</span></p>
+      </footer>
+    </div>
+    <script src="/static/js/app.js"></script>
+  </body>
+</html>

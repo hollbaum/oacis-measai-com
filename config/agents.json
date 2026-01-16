@@ -1,0 +1,8 @@
+{
+  "agents": [
+    {"name": "Claude", "host": "vm100", "session": "claude_session", "type": "lxc"},
+    {"name": "Gemini", "host": "vm100", "session": "gemini_session", "type": "lxc"},
+    {"name": "Codex", "host": "vm100", "session": "codex_session", "type": "lxc"},
+    {"name": "Copilot", "host": "vm100", "session": "copilot_session", "type": "lxc"}
+  ]
+}

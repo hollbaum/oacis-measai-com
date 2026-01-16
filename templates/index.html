@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>VM100 Dashboard</title>
+    <link rel="stylesheet" href="/static/css/style.css" />
+  </head>
+  <body>
+    <div class="dashboard-container">
+      <header class="dashboard-header">
+        <h1 class="dashboard-title">🤖 VM100 Agent Dashboard</h1>
+        <p class="dashboard-subtitle">Real-time monitoring & control center</p>
+      </header>
+
+      <main class="agents-grid">
+        {% for agent in agents %}
+          <div class="agent-card" data-agent="{{ agent.name }}">
+            <div class="card-header">
+              <span class="agent-icon">🤖</span>
+              <h2 class="agent-name">{{ agent.name }}</h2>
+            </div>
+
+            <div class="card-status">
+              <div class="status-indicator {% if agent.running %}status-active{% else %}status-idle{% endif %}">
+                <span class="status-dot"></span>
+                <span class="status-text">
+                  {% if agent.running %}Active{% else %}Idle{% endif %}
+                </span>
+              </div>
+            </div>
+
+            <div class="card-info">
+              {% if agent.current_task %}
+                <p class="task-label">Current Task:</p>
+                <p class="task-value">{{ agent.current_task[:60] }}{% if agent.current_task|length > 60 %}...{% endif %}</p>
+              {% endif %}
+              {% if agent.last_heartbeat %}
+                <p class="heartbeat-label">Last Heartbeat:</p>
+                <p class="heartbeat-value">{{ agent.last_heartbeat }}</p>
+              {% endif %}
+            </div>
+
+            <div class="card-footer">
+              <a href="/agent/{{ agent.name }}" class="btn-view">View Details →</a>
+            </div>
+          </div>
+        {% endfor %}
+      </main>
+
+      <footer class="dashboard-footer">
+        <p>Last updated: <span id="last-update">just now</span></p>
+      </footer>
+    </div>
+    <script src="/static/js/app.js"></script>
+  </body>
+</html>

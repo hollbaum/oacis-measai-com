@@ -1,0 +1,11 @@
+version: '3.8'
+services:
+  oacis-dashboard:
+    build: .
+    ports:
+      - "5000:5000"
+    volumes:
+      - /home/maestro/Measai-Maestro/AI_Agents:/app/AI_Agents:ro
+    environment:
+      - FLASK_ENV=production
+      - REPO_ROOT=/app
