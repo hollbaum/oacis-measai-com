@@ -1,3 +1,9 @@
+"""
+OACIS Dashboard - VM100 Agent Monitoring
+
+Designed to work both locally and in Docker containers.
+Gracefully handles missing tmux/volume mounts when deployed.
+"""
 from __future__ import annotations
 
 import json
@@ -72,16 +78,19 @@ def _find_agent_entry(name: str) -> Dict[str, Any] | None:
 
 
 def _tmux_sessions() -> List[str]:
+    """Get tmux sessions. Returns empty list if tmux not available (e.g., in Docker)."""
     try:
         result = subprocess.run(
             ["tmux", "list-sessions", "-F", "#{session_name}"],
             check=True,
             capture_output=True,
             text=True,
+            timeout=5,
         )
-    except (subprocess.CalledProcessError, FileNotFoundError):
+        return [line.strip() for line in result.stdout.splitlines() if line.strip()]
+    except (subprocess.CalledProcessError, FileNotFoundError, subprocess.TimeoutExpired):
+        # tmux not available (Docker container) or no sessions running
         return []
-    return [line.strip() for line in result.stdout.splitlines() if line.strip()]
 
 
 def _tmux_capture(session: str, lines: int = 50) -> str:
@@ -95,7 +104,10 @@ def _tmux_capture(session: str, lines: int = 50) -> str:
 
 
 def _load_operational_state() -> Dict[str, Any]:
+    """Load operational state. Returns empty dict if file not available."""
     try:
+        if not os.path.exists(OPER_STATE_PATH):
+            return {}
         with open(OPER_STATE_PATH, "r", encoding="utf-8") as handle:
             return json.load(handle)
     except (FileNotFoundError, json.JSONDecodeError):
