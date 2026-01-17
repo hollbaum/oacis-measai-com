@@ -187,9 +187,20 @@ def _tail_file(path: str, max_lines: int = 200) -> List[str]:
     return [line.rstrip("\n") for line in lines[-max_lines:]]
 
 
+@app.route("/health")
+def health():
+    """Simple health check endpoint for deployment verification."""
+    return jsonify({"status": "ok", "service": "oacis-dashboard", "timestamp": datetime.utcnow().isoformat() + "Z"})
+
+
 @app.route("/")
 def index() -> str:
-    agents = _agent_status()
+    try:
+        agents = _agent_status()
+    except Exception as exc:
+        # Graceful degradation if agent status fails
+        agents = []
+        app.logger.error(f"Failed to load agent status: {exc}")
     return render_template("index.html", agents=agents)
 
 
